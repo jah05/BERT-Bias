@@ -1,6 +1,7 @@
 import argparse
 import sys
 from models import BERT_Base
+import torch
 
 def str2bool(v):
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
@@ -12,16 +13,16 @@ def str2bool(v):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_portion', default=0.5, type=float)
-    parser.add_argument('--top_k', default=100, type=float)
+    parser.add_argument('--data_portion', default=0.1, type=float)
+    parser.add_argument('--k', default=500, type=float)
     parser.add_argument('--model', default="bert-base", type=str)
-    parser.add_argument('--base_corpus', default="bookcorpus", type=str)
+    parser.add_argument('--base_corpus', default="wikipedia", type=str)
     parser.add_argument('--cased', default=False, type=str2bool)
     args = parser.parse_args()
 
     if args.model == "bert-base":
         b = BERT_Base(args)
-        attention, words = b.run_model("The cat sat on the mat")
-        print(attention[0][0][11][7][7]) # 1 x 12
-        print(type(attention[0]))
-        print(words)
+        b.findTopK("he")
+        # _, _, tokens = b.tokenize("Ma name is jamesd", "nice to meet yo")
+        # print(tokens)
+        # b.findLen(515)
