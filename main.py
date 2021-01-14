@@ -18,6 +18,7 @@ if __name__ == '__main__':
     parser.add_argument('--model', default="bert-base", type=str)
     parser.add_argument('--base_corpus', default="wikipedia", type=str)
     parser.add_argument('--cased', default=False, type=str2bool)
+    parser.add_argument('--path', default="logs/loghe.txt", type=str)
     args = parser.parse_args()
 
     if args.model == "bert-base":

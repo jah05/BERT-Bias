@@ -1,6 +1,7 @@
+fname = "logs/" + input("File Name: ")
 k = 500
 d = {}
-f = open("loghe.txt", "r")
+f = open(fname, "r")
 
 counter = 0
 for line in f:
@@ -16,7 +17,7 @@ f.close()
 
 d = dict(sorted(d.items(),  key=lambda item: item[1], reverse=True))
 
-f = open("loghe.txt", "w")
+f = open(fname, "w")
 f.write("# word avg_score")
 for i, key in enumerate(d):
     f.write("\n%d. %s %f" %(i+1, key, d[key]))

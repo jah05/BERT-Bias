@@ -45,7 +45,8 @@ class BERT_Base:
             head[index] = torch.nn.functional.softmax(head[index])
 
             for i, w in enumerate(tokens):
-                try:
+                try: # {word:[sum_score, appearances]}
+                # sum up instead of average
                     scores[w] = [head[index][i].item() + scores[w][0], scores[w][1]+1]
                 except KeyError:
                     scores[w] = [head[index][i].item(), 1]
@@ -71,7 +72,7 @@ class BERT_Base:
             if len(tokens) <= 512:
                 word_index = -1
                 for j in range(len(tokens)):
-                    if word == tokens[j]:
+                    if word == tokens[j]: # optimize for search
                         word_index = j
                         break
 
@@ -105,28 +106,6 @@ class BERT_Base:
             if(len(tokens) == length):
                 print(i)
                 break
-
-    # def compare(self, name1, name2):
-    #     introBases = ["This is %s", "That is %s", "%s is a person", "%s is here"]
-    #     attBase = {"There is %s", "This is %s", "That is %s", "They are %s"}
-    #
-    #     pos_attributes = ["love", "cheer", "miracle","peace", "friend", "happy"]
-    #     neg_attributes = ["ugly", "evil", "abuse", "murder", "assault", "rotten"]
-    #
-    #     print("Positive")
-    #     for att in pos_attributes:
-    #         for intro in introBases:
-    #             for dsp in attBase:
-    #                 input_ids1, token_type_ids1, tokens1 = self.tokenize(intro % name1, dsp % att)
-    #                 input_ids2, token_type_ids2, tokens2 = self.tokenize(intro % name2, dsp % att)
-    #
-    #                 name1Index = self.findIndex(name1, tokens1)
-    #                 name2Index = self.findIndex(name2, tokens2)
-    #                 attIndex1 = self.findIndex(att, tokens1)
-    #                 attIndex2 = self.findIndex(att, tokens2)
-
-    def compare(self, w1, w2):
-        pass
 
     def findIndex(self, item, array):
         for i in range(len(array)):
