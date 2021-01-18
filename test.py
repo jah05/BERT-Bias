@@ -1,5 +1,4 @@
-import sys
-from transformers import BertTokenizer, BertModel
-import datasets
+from datasets import load_dataset
 
-dataset = datasets.load_dataset('wikipedia','20200501.aa', beam_runner='DirectRunner')
+corpus = load_dataset('wikipedia', '20200501.aa')
+print(len(corpus))
