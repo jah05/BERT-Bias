@@ -5,7 +5,10 @@ f = open(fname, 'r')
 words = []
 for line in f:
     line = line.strip()
-    words.append('"%s"' %line)
+    words = line.split(", ")
+
+for i in range(len(words)):
+    words[i] = '"%s"' %words[i]
 
 f.close()
 

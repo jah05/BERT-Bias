@@ -98,6 +98,114 @@ def plotSideBySide(att1, att2, c1, c2, key1, key2, name):
     fig.tight_layout()
     fig.savefig("graphs/" + name + ".png")
 
+def plotNormSideBySide(att1, att2, c1, c2, key1, key2, name):
+    x = np.arange(len(att1[key1]) + len(att1[key2]))
+    width = 0.35
+    fig, ax = plt.subplots(1)
+
+    word1_score = {}
+    word2_score = {}
+    word1_sum = 0
+    word2_sum = 0
+    for key in att1[key1]:
+        word1_score[key] = att1[key1][key]
+        word1_sum += att1[key1][key]
+        word2_score[key] = att2[key1][key]
+        word2_sum += att2[key1][key]
+    for key in att1[key2]:
+        word1_score[key] = att1[key2][key]
+        word1_sum += att1[key2][key]
+        word2_score[key] = att2[key2][key]
+        word2_sum += att2[key2][key]
+
+    for key in word1_score:
+        word1_score[key] /= word1_sum
+        word2_score[key] /= word2_sum
+
+    rects1 = ax.bar(x - width/2, list(word1_score.values()), width, label=c1)
+    rects2 = ax.bar(x + width/2, list(word2_score.values()), width, label=c2)
+
+    ax.set_ylabel('Score')
+    ax.set_title("score_norm")
+    ax.set_xticks(x)
+    ax.set_xticklabels(list(word1_score.keys()))
+    ax.legend()
+
+    fig.tight_layout()
+    fig.savefig("graphs/" + name + "_norm.png")
+
+def plotNormPerBar(att1, att2, c1, c2, key1, key2, name):
+    x = np.arange(len(att1[key1]) + len(att1[key2]))
+    width = 0.35
+    fig, ax = plt.subplots(1)
+
+    word1_score = {}
+    word2_score = {}
+    for key in att1[key1]:
+        word1_score[key] = att1[key1][key]
+        word2_score[key] = att2[key1][key]
+    for key in att1[key2]:
+        word1_score[key] = att1[key2][key]
+        word2_score[key] = att2[key2][key]
+
+    for key in word1_score:
+        try:
+            word1_score[key] /= (word1_score[key] + word2_score[key])
+        except ZeroDivisionError:
+            word1_score[key] = 0
+        if word1_score[key] != 0:
+            word2_score[key] = 1 - word1_score[key]
+        else:
+            word2_score[key] = 0
+
+    rects1 = ax.bar(x - width/2, list(word1_score.values()), width, label=c1)
+    rects2 = ax.bar(x + width/2, list(word2_score.values()), width, label=c2)
+
+    ax.set_ylabel('Score')
+    ax.set_title("bar_norm")
+    ax.set_xticks(x)
+    ax.set_xticklabels(list(word1_score.keys()))
+    ax.legend()
+
+    fig.tight_layout()
+    fig.savefig("graphs/" + name + "_barnorm.png")
+
+def plotNormOcc(data1, data2, app1, app2, c1, c2, name):
+    x = np.arange(len(app1))
+    width = 0.35
+    fig, ax = plt.subplots(1)
+
+    d1 = {}
+    d2 = {}
+    for key in data1:
+        d1[key] = app1[key]
+        d2[key] = app2[key]
+    for key in data2:
+        d1[key] = app1[key]
+        d2[key] = app2[key]
+
+    sum1 = 0
+    sum2 = 0
+    for key in d1:
+        sum1 += d1[key]
+        sum2 += d2[key]
+
+    for key in d1:
+        d1[key] /= sum1
+        d2[key] /= sum2
+
+    rects1 = ax.bar(x - width/2, list(d1.values()), width, label=c1)
+    rects2 = ax.bar(x + width/2, list(d2.values()), width, label=c2)
+
+    ax.set_ylabel('Score')
+    ax.set_title("occ_norm")
+    ax.set_xticks(x)
+    ax.set_xticklabels(list(d1.keys()))
+    ax.legend()
+
+    fig.tight_layout()
+    fig.savefig("graphs/" + name + "_norm.png")
+
 def plotAvgSBS(att1, att2, c1, c2, key1, key2, name):
     x1 = np.arange(len(att1[key1]))
     x2 = np.arange(len(att1[key2]))
@@ -178,13 +286,16 @@ if __name__ == "__main__":
     key4 = "he"
     f2.close()
 
-    plot2Stereotypes(data1,key1,key2, "she_occupation_graph")
-    plot2Stereotypes(data2,key3,key4, "he_occupation_graph")
-
-    plotStereotypeAveraged(data1,key1,key2, "she_occupation_graph")
-    plotStereotypeAveraged(data2,key3,key4, "he_occupation_graph")
-
-    plotSideBySide(data1, data2, "Woman", "Man", key1, key2, "she_he_comparison")
-    plotAvgSBS(data1, data2, "Woman", "Man", key1, key2, "she_he_comparison")
+    plotNormSideBySide(data1, data2, "female", "male", key1, key2, "she_he_comparison")
+    plotNormPerBar(data1, data2, "female", "male", key1, key2, "she_he_comparison")
+    # plot2Stereotypes(data1,key1,key2, "she_occupation_graph")
+    # plot2Stereotypes(data2,key3,key4, "he_occupation_graph")
+    #
+    # plotStereotypeAveraged(data1,key1,key2, "she_occupation_graph")
+    # plotStereotypeAveraged(data2,key3,key4, "he_occupation_graph")
+    #
+    # plotSideBySide(data1, data2, "Woman", "Man", key1, key2, "she_he_comparison")
+    # plotAvgSBS(data1, data2, "Woman", "Man", key1, key2, "she_he_comparison")
+    plotNormOcc(data1["she"], data1["he"], data1["appearances"], data2["appearances"], "female", "male", "she_he_appearance_comp")
 
     plt.show()
