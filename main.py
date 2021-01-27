@@ -20,14 +20,28 @@ if __name__ == '__main__':
     parser.add_argument('--base_corpus', default="bookcorpus", type=str)
     parser.add_argument('--cased', default=False, type=str2bool)
     parser.add_argument('--path', default="logs/loghe.txt", type=str)
+    parser.add_argument('--skip', default=3, type=int)
+    parser.add_argument('--score_fname', default='', type=str)
     args = parser.parse_args()
 
+    print(args)
     if args.model == "bert-base":
         b = BERT_Base(args)
-        b.processNames("race_att.json", "black", "white")
+        # b.processNames("race_att.json", "black", "white")
         f = open("race_att.json", 'r')
         data = json.load(f)
-        stereotypes = data["stereotype"]["pu"]
+        stereotypes = data["stereotype"]["occupation"]
         names1 = data["names"]["black"]
         names2 = data["names"]["white"]
-        b.stereotypeHistogramMulti("race_att.json", stereotypes, "pleasant", "unpleasant", "black", "white", names1, names2, "pu")
+        b.stereotypeHistogramMulti("race_att.json", stereotypes, "low-pay", "high-pay", "black", "white", names1, names2, "occupation")
+
+        # f = open("gender_att.json", 'r')
+        # data = json.load(f)
+        # stereotype = data["stereotype"]["occupation"]
+        # key1 = "she"
+        # key2 = "he"
+        # word1 = "she"
+        # word2 = "he"
+        # sName = "occupation"
+        # f.close()
+        # b.stereotypeHistogram(stereotype, key1, key2, word1, word2, sName)

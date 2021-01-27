@@ -8,6 +8,7 @@ import json
 
 class BERT_Base:
     def __init__(self, args):
+        self.args = args
         self.cased = args.cased
         self.k = args.k
         self.data_portion = args.data_portion
@@ -22,7 +23,12 @@ class BERT_Base:
         self.model.eval()
         self.model.to('cuda')
         self.tokenizer = BertTokenizer.from_pretrained(self.model_version, do_lower_case=(not self.cased))
-        self.corpus = load_dataset(args.base_corpus)["train"]
+        if args.base_corpus == "bookcorpus":
+            self.corpus = load_dataset(args.base_corpus)["train"]
+            self.corpLen = len(self.corpus)
+        elif args.base_corpus == "wikipedia":
+            self.corpus = open(r"D:\wikipedia_sentences.txt", 'r')
+            self.corpLen = 105600162
 
     def run_model(self, input_ids, token_type_ids):
         attention = self.model(input_ids, token_type_ids=token_type_ids)[-1]
@@ -80,7 +86,7 @@ class BERT_Base:
                     attention = self.run_model(input_ids, token_type_ids)[0]
                     self.analyze(word, word_index, attention, tokens, scores)
 
-            if int(self.data_portion * len(self.corpus)) == i:
+            if int(self.data_portion * self.corpLen) == i:
                 break
         scores = self.sortDict(scores)
         self.printTopK(scores)
@@ -104,47 +110,47 @@ class BERT_Base:
             word2_scores["appearances"][attribute] = 0
 
         for i, sentence in enumerate(self.corpus):
-            if i % 3 == 0:
-                sentence = sentence["text"]
+            if i % self.args.skip == 0:
+                if self.args.base_corpus == "bookcorpus":
+                    sentence = sentence["text"]
                 input_ids, token_type_ids, tokens = self.tokenize(sentence)
-                print(tokens)
                 index1 = self.findIndex(word1, tokens)
                 index2 = self.findIndex(word2, tokens)
 
-                if i % 30000 == 0:
+                if i % (self.args.skip*10000) == 0:
                     print(i)
                     print(datetime.datetime.now())
 
                     word1_scores[key1] = self.sortDict(word1_scores[key1])
                     word1_scores[key2] = self.sortDict(word1_scores[key2])
-                    f = open("logs/" + word1 + "_scores.json", 'r')
+                    f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'r')
                     try:
                         data = json.load(f)
                         f.close()
                     except json.decoder.JSONDecodeError:
                         f.close()
-                        f = open("logs/" + word1 + "_scores.json", 'w')
+                        f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
                         json.dump({}, f)
                         data = {}
                         f.close()
-                    f = open("logs/" + word1 + "_scores.json", 'w')
+                    f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
                     data[sName] = word1_scores
                     json.dump(data, f)
                     f.close()
 
                     word2_scores[key1] = self.sortDict(word2_scores[key1])
                     word2_scores[key2] = self.sortDict(word2_scores[key2])
-                    f = open("logs/" + word2 + "_scores.json", "r")
+                    f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", "r")
                     try:
                         data = json.load(f)
                         f.close()
                     except json.decoder.JSONDecodeError:
                         f.close()
-                        f = open("logs/" + word2 + "_scores.json", 'w')
+                        f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", 'w')
                         json.dump({}, f)
                         data = {}
                         f.close()
-                    f = open("logs/" + word2 + "_scores.json", "w")
+                    f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", "w")
                     data[sName] = word2_scores
                     json.dump(data, f)
                     f.close()
@@ -210,39 +216,39 @@ class BERT_Base:
                                     word2_scores["appearances"][w] += 1
                                 except KeyError:
                                     pass
-                if int(self.data_portion * len(self.corpus)) == i:
+                if int(self.data_portion * self.corpLen) == i:
                     break
 
         word1_scores[key1] = self.sortDict(word1_scores[key1])
         word1_scores[key2] = self.sortDict(word1_scores[key2])
-        f = open("logs/" + word1 + "_scores.json", 'r')
+        f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'r')
         try:
             data = json.load(f)
             f.close()
         except json.decoder.JSONDecodeError:
             f.close()
-            f = open("logs/" + word1 + "_scores.json", 'w')
+            f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
             json.dump({}, f)
             data = {}
             f.close()
-        f = open("logs/" + word1 + "_scores.json", 'w')
+        f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
         data[sName] = word1_scores
         json.dump(data, f)
         f.close()
 
         word2_scores[key1] = self.sortDict(word2_scores[key1])
         word2_scores[key2] = self.sortDict(word2_scores[key2])
-        f = open("logs/" + word2 + "_scores.json", "r")
+        f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", "r")
         try:
             data = json.load(f)
             f.close()
         except json.decoder.JSONDecodeError:
             f.close()
-            f = open("logs/" + word2 + "_scores.json", 'w')
+            f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", 'w')
             json.dump({}, f)
             data = {}
             f.close()
-        f = open("logs/" + word2 + "_scores.json", "w")
+        f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", "w")
         data[sName] = word2_scores
         json.dump(data, f)
         f.close()
@@ -266,46 +272,47 @@ class BERT_Base:
             word2_scores["appearances"][attribute] = 0
 
         for i, sentence in enumerate(self.corpus):
-            if i % 3 == 0:
-                sentence = sentence["text"]
+            if i % self.args.skip == 0:
+                if self.args.base_corpus == "bookcorpus":
+                    sentence = sentence["text"]
                 input_ids, token_type_ids, tokens = self.tokenize(sentence)
                 index1s, index1f = self.findIndexL(names1, tokens)
                 index2s, index2f = self.findIndexL(names2, tokens)
 
-                if i % 30000 == 0:
+                if i % (self.args.skip * 10000) == 0:
                     print(i)
                     print(datetime.datetime.now())
 
                     word1_scores[key1] = self.sortDict(word1_scores[key1])
                     word1_scores[key2] = self.sortDict(word1_scores[key2])
-                    f = open("logs/" + word1 + "_scores.json", 'r')
+                    f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'r')
                     try:
                         data = json.load(f)
                         f.close()
                     except json.decoder.JSONDecodeError:
                         f.close()
-                        f = open("logs/" + word1 + "_scores.json", 'w')
+                        f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
                         json.dump({}, f)
                         data = {}
                         f.close()
-                    f = open("logs/" + word1 + "_scores.json", 'w')
+                    f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
                     data[sName] = word1_scores
                     json.dump(data, f)
                     f.close()
 
                     word2_scores[key1] = self.sortDict(word2_scores[key1])
                     word2_scores[key2] = self.sortDict(word2_scores[key2])
-                    f = open("logs/" + word2 + "_scores.json", "r")
+                    f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", "r")
                     try:
                         data = json.load(f)
                         f.close()
                     except json.decoder.JSONDecodeError:
                         f.close()
-                        f = open("logs/" + word2 + "_scores.json", 'w')
+                        f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", 'w')
                         json.dump({}, f)
                         data = {}
                         f.close()
-                    f = open("logs/" + word2 + "_scores.json", "w")
+                    f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", "w")
                     data[sName] = word2_scores
                     json.dump(data, f)
                     f.close()
@@ -394,39 +401,39 @@ class BERT_Base:
                                     word2_scores[key2][w] += s
                                     word2_scores["appearances"][w] += 1
 
-                if int(self.data_portion * len(self.corpus)) == i:
+                if int(self.data_portion * self.corpLen) == i:
                     break
 
         word1_scores[key1] = self.sortDict(word1_scores[key1])
         word1_scores[key2] = self.sortDict(word1_scores[key2])
-        f = open("logs/" + word1 + "_scores.json", 'r')
+        f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'r')
         try:
             data = json.load(f)
             f.close()
         except json.decoder.JSONDecodeError:
             f.close()
-            f = open("logs/" + word1 + "_scores.json", 'w')
+            f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
             json.dump({}, f)
             data = {}
             f.close()
-        f = open("logs/" + word1 + "_scores.json", 'w')
+        f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
         data[sName] = word1_scores
         json.dump(data, f)
         f.close()
 
         word2_scores[key1] = self.sortDict(word2_scores[key1])
         word2_scores[key2] = self.sortDict(word2_scores[key2])
-        f = open("logs/" + word2 + "_scores.json", "r")
+        f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", "r")
         try:
             data = json.load(f)
             f.close()
         except json.decoder.JSONDecodeError:
             f.close()
-            f = open("logs/" + word2 + "_scores.json", 'w')
+            f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", 'w')
             json.dump({}, f)
             data = {}
             f.close()
-        f = open("logs/" + word2 + "_scores.json", "w")
+        f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", "w")
         data[sName] = word2_scores
         json.dump(data, f)
         f.close()

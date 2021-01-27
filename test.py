@@ -1,4 +1,6 @@
-from datasets import load_dataset
+file = open(r"logs/test.txt", "r")
 
-corpus = load_dataset('wikipedia', '20200501.aa')
-print(len(corpus))
+for i, line in enumerate(file):
+    print(i)
+
+file.close()
