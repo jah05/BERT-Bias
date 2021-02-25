@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import datetime
 import json
+import os
 
 class BERT_Base:
     def __init__(self, args):
@@ -19,7 +20,7 @@ class BERT_Base:
         else:
             self.model_version += "uncased"
 
-        self.model = BertModel.from_pretrained(self.model_version, output_attentions=True)
+        self.model = BertModel.from_pretrained(self.model_version, output_attentions=True, output_hidden_states=True)
         self.model.eval()
         self.model.to('cuda')
         self.tokenizer = BertTokenizer.from_pretrained(self.model_version, do_lower_case=(not self.cased))
@@ -29,10 +30,13 @@ class BERT_Base:
         elif args.base_corpus == "wikipedia":
             self.corpus = open(r"D:\wikipedia_sentences.txt", 'r')
             self.corpLen = 105600162
+        elif args.base_corpus == "bleached":
+            self.corpus = open("bleached.txt", 'r')
+            self.corpLen = 100000
 
     def run_model(self, input_ids, token_type_ids):
-        attention = self.model(input_ids, token_type_ids=token_type_ids)[-1]
-        return attention
+        output = self.model(input_ids, token_type_ids=token_type_ids, output_attentions=True, output_hidden_states=True)
+        return output[0], output[2]
 
     def tokenize(self, sentence, sentence2=None):
         if sentence2 == None:
@@ -121,6 +125,13 @@ class BERT_Base:
                     print(i)
                     print(datetime.datetime.now())
 
+                    if not os.path.isfile("logs/" + word1 + "_scores" + self.args.score_fname + ".json"):
+                        f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
+                        f.close()
+                    if not os.path.isfile("logs/" + word2 + "_scores" + self.args.score_fname + ".json"):
+                        f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", 'w')
+                        f.close()
+
                     word1_scores[key1] = self.sortDict(word1_scores[key1])
                     word1_scores[key2] = self.sortDict(word1_scores[key2])
                     f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'r')
@@ -158,64 +169,59 @@ class BERT_Base:
 
                 if len(tokens) <= 512:
                     if index1 != -1 and index2 != -1:
-                        attention = self.run_model(input_ids, token_type_ids)[0]
-                        ll = attention[-1]
-                        for head in ll:
-                            head[index1] = torch.nn.functional.softmax(head[index1])
-                            head[index2] = torch.nn.functional.softmax(head[index2])
-                            for j, w in enumerate(tokens):
-                                try:
-                                    word1_scores[key1][w] += head[index1][j].item()
-                                    word1_scores["appearances"][w] += 1
-                                except KeyError:
-                                    pass
-                                try:
-                                    word1_scores[key2][w] += head[index1][j].item()
-                                    word1_scores["appearances"][w] += 1
-                                except KeyError:
-                                    pass
-                                try:
-                                    word2_scores[key1][w] += head[index2][j].item()
-                                    word2_scores["appearances"][w] += 1
-                                except KeyError:
-                                    pass
-                                try:
-                                    word2_scores[key2][w] += head[index2][j].item()
-                                    word2_scores["appearances"][w] += 1
-                                except KeyError:
-                                    pass
+                        last_hidden, _ = self.run_model(input_ids, token_type_ids)
+                        last_hidden = last_hidden.squeeze(0)
+                        for j, w in enumerate(tokens):
+                            try:
+                                word1_scores[key1][w] = self.score(last_hidden, index1, index1, j)[0]
+                                word1_scores["appearances"][w] += 1
+                            except KeyError:
+                                pass
+                            try:
+                                word1_scores[key2][w] = self.score(last_hidden, index1, index1, j)[0]
+                                word1_scores["appearances"][w] += 1
+                            except KeyError:
+                                pass
+                            try:
+                                word2_scores[key1][w] = self.score(last_hidden, index2, index2, j)[0]
+                                word2_scores["appearances"][w] += 1
+                            except KeyError:
+                                pass
+                            try:
+                                word2_scores[key2][w] = self.score(last_hidden, index2, index2, j)[0]
+                                word2_scores["appearances"][w] += 1
+                            except KeyError:
+                                pass
                     elif index1 != -1:
-                        attention = self.run_model(input_ids, token_type_ids)[0]
-                        ll = attention[-1]
-                        for head in ll:
-                            head[index1] = torch.nn.functional.softmax(head[index1])
-                            for j, w in enumerate(tokens):
-                                try:
-                                    word1_scores[key1][w] += head[index1][j].item()
-                                    word1_scores["appearances"][w] += 1
-                                except KeyError:
-                                    pass
-                                try:
-                                    word1_scores[key2][w] += head[index1][j].item()
-                                    word1_scores["appearances"][w] += 1
-                                except KeyError:
-                                    pass
+                        last_hidden, _ = self.run_model(input_ids, token_type_ids)
+                        last_hidden = last_hidden.squeeze(0)
+                        for j, w in enumerate(tokens):
+                            try:
+                                word1_scores[key1][w] = self.score(last_hidden, index1, index1, j)[0]
+                                word1_scores["appearances"][w] += 1
+                            except KeyError:
+                                pass
+                            try:
+                                word1_scores[key2][w] = self.score(last_hidden, index1, index1, j)[0]
+                                word1_scores["appearances"][w] += 1
+                            except KeyError:
+                                pass
                     elif index2 != -1:
-                        attention = self.run_model(input_ids, token_type_ids)[0]
-                        ll = attention[-1]
-                        for head in ll:
-                            head[index2] = torch.nn.functional.softmax(head[index2])
-                            for j, w in enumerate(tokens):
-                                try:
-                                    word2_scores[key1][w] += head[index2][j].item()
-                                    word2_scores["appearances"][w] += 1
-                                except KeyError:
-                                    pass
-                                try:
-                                    word2_scores[key2][w] += head[index2][j].item()
-                                    word2_scores["appearances"][w] += 1
-                                except KeyError:
-                                    pass
+                        last_hidden, _ = self.run_model(input_ids, token_type_ids)
+                        last_hidden = last_hidden.squeeze(0)
+
+                        for j, w in enumerate(tokens):
+                            try:
+                                word2_scores[key1][w] = self.score(last_hidden, index2, index2, j)[0]
+                                word2_scores["appearances"][w] += 1
+                            except KeyError:
+                                pass
+                            try:
+                                word2_scores[key2][w] = self.score(last_hidden, index2, index2, j)[0]
+                                word2_scores["appearances"][w] += 1
+                            except KeyError:
+                                pass
+
                 if int(self.data_portion * self.corpLen) == i:
                     break
 
@@ -257,6 +263,15 @@ class BERT_Base:
         ster1 = stereotype[key1]
         ster2 = stereotype[key2]
 
+        tokenizedSter1 = []
+        tokenizedSter2 = []
+        for attribute in ster1:
+            tokenizedSter1.append(self.tokenize(attribute)[2][1:-1])
+        for attribute in ster2:
+            tokenizedSter2.append(self.tokenize(attribute)[2][1:-1])
+
+        stored = {"ster":sName, "key1":key1, "key2":key2, "word1":word1, "word2":word2, "skip":self.args.skip, "corpus":self.args.base_corpus,  "data":[]}
+
         word1_scores = {key1:{}, key2:{}, "appearances":{}}
         word2_scores = {key1:{}, key2:{}, "appearances":{}}
 
@@ -282,7 +297,12 @@ class BERT_Base:
                 if i % (self.args.skip * 10000) == 0:
                     print(i)
                     print(datetime.datetime.now())
-
+                    if not os.path.isfile("logs/" + word1 + "_scores" + self.args.score_fname + ".json"):
+                        f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'w')
+                        f.close()
+                    if not os.path.isfile("logs/" + word2 + "_scores" + self.args.score_fname + ".json"):
+                        f = open("logs/" + word2 + "_scores" + self.args.score_fname + ".json", 'w')
+                        f.close()
                     word1_scores[key1] = self.sortDict(word1_scores[key1])
                     word1_scores[key2] = self.sortDict(word1_scores[key2])
                     f = open("logs/" + word1 + "_scores" + self.args.score_fname + ".json", 'r')
@@ -317,92 +337,104 @@ class BERT_Base:
                     json.dump(data, f)
                     f.close()
 
+                    f = open(self.args.data_dir + "d-%s_s-%d-ste_%s-g1_%s-g2_%s.json" % (self.args.base_corpus, self.args.skip, sName, word1, word2), 'w')
+                    json.dump(stored, f)
+                    f.close()
 
                 if len(tokens) <= 512:
                     if index1s != -1 and index2s != -1:
-                        attention = self.run_model(input_ids, token_type_ids)[0]
-                        ll = attention[-1]
-                        for head in ll:
-                            for ind in range(index1s, index1f+1):
-                                head[ind] = torch.nn.functional.softmax(head[ind])
-                            for ind in range(index2s, index2f+1):
-                                head[ind] = torch.nn.functional.softmax(head[ind])
-                            for j, w in enumerate(tokens):
-                                if w in word1_scores[key1]:
-                                    s = 0
-                                    for ind in range(index1s, index1f+1):
-                                        s += head[ind][j].item()
-                                    s /= (index1f + 1 - index1s)
-                                    word1_scores[key1][w] += s
-                                    word1_scores["appearances"][w] += 1
-                                if w in word1_scores[key2]:
-                                    s = 0
-                                    for ind in range(index1s, index1f+1):
-                                        s += head[ind][j].item()
-                                    s /= (index1f + 1 - index1s)
-                                    word1_scores[key2][w] += s
-                                    word1_scores["appearances"][w] += 1
-                                if w in word2_scores[key1]:
-                                    s = 0
-                                    for ind in range(index2s, index2f+1):
-                                        s += head[ind][j].item()
-                                    s /= (index2f + 1 - index2s)
-                                    word2_scores[key1][w] += s
-                                    word2_scores["appearances"][w] += 1
-                                if w in word2_scores[key2]:
-                                    s = 0
-                                    for ind in range(index2s, index2f+1):
-                                        s += head[ind][j].item()
-                                    s /= (index2f + 1 - index2s)
-                                    word2_scores[key2][w] += s
-                                    word2_scores["appearances"][w] += 1
+                        last_hidden, lh_input = self.run_model(input_ids, token_type_ids)
+                        hidden_in = lh_input[-2].squeeze(0)
+                        last_hidden = last_hidden.squeeze(0)
+                        for ind, attWord in enumerate(tokenizedSter1):
+                            for j in range(len(tokens)):
+                                for k in range(j, len(tokens)):
+                                    if attWord == tokens[j:k+1]:
+                                        w = ster1[ind]
+                                        s, _ = self.score(last_hidden, index1s, index1f, j, k)
+                                        stData = self.formatData(last_hidden, hidden_in, word1, w, j, k, index1s, index1f)
+                                        stored["data"].append(stData)
+                                        word1_scores[key1][w] += s
+                                        word1_scores["appearances"][w] += 1
+
+                                        s, _ = self.score(last_hidden, index2s, index2f, j, k)
+                                        stData = self.formatData(last_hidden, hidden_in, word2, w, j, k, index2s, index2f)
+                                        stored["data"].append(stData)
+                                        word2_scores[key1][w] += s
+                                        word2_scores["appearances"][w] += 1
+
+                        for ind, attWord in enumerate(tokenizedSter2):
+                            for j in range(len(tokens)):
+                                for k in range(j, len(tokens)):
+                                    if attWord == tokens[j:k+1]:
+                                        w = ster2[ind]
+                                        s, _ = self.score(last_hidden, index1s, index1f, j, k)
+                                        stData = self.formatData(last_hidden, hidden_in, word1, w, j, k, index1s, index1f)
+                                        stored["data"].append(stData)
+                                        word1_scores[key2][w] += s
+                                        word1_scores["appearances"][w] += 1
+
+                                        s, _ = self.score(last_hidden, index2s, index2f, j, k)
+                                        stData = self.formatData(last_hidden, hidden_in, word2, w, j, k, index2s, index2f)
+                                        stored["data"].append(stData)
+                                        word2_scores[key2][w] += s
+                                        word2_scores["appearances"][w] += 1
 
                     elif index1s != -1:
-                        attention = self.run_model(input_ids, token_type_ids)[0]
-                        ll = attention[-1]
-                        for head in ll:
-                            for ind in range(index1s, index1f+1):
-                                head[ind] = torch.nn.functional.softmax(head[ind])
-                            for j, w in enumerate(tokens):
-                                if w in word1_scores[key1]:
-                                    s = 0
-                                    for ind in range(index1s, index1f+1):
-                                        s += head[index2s][j].item()
-                                    s /= (index1f + 1 - index1s)
-                                    word1_scores[key1][w] += s
-                                    word1_scores["appearances"][w] += 1
-                                if w in word1_scores[key2]:
-                                    s = 0
-                                    for ind in range(index1s, index1f+1):
-                                        s += head[index2s][j].item()
-                                    s /= (index1f + 1 - index1s)
-                                    word1_scores[key2][w] += s
-                                    word1_scores["appearances"][w] += 1
+                        last_hidden, lh_input = self.run_model(input_ids, token_type_ids)
+                        hidden_in = lh_input[-2].squeeze(0)
+                        last_hidden = last_hidden.squeeze(0)
+                        for ind, attWord in enumerate(tokenizedSter1):
+                            for j in range(len(tokens)):
+                                for k in range(j, len(tokens)):
+                                    if attWord == tokens[j:k+1]:
+                                        w = ster1[ind]
+                                        s, _ = self.score(last_hidden, index1s, index1f, j, k)
+                                        stData = self.formatData(last_hidden, hidden_in, word1, w, j, k, index1s, index1f)
+                                        stored["data"].append(stData)
+                                        word1_scores[key1][w] += s
+                                        word1_scores["appearances"][w] += 1
+
+                        for ind, attWord in enumerate(tokenizedSter2):
+                            for j in range(len(tokens)):
+                                for k in range(j, len(tokens)):
+                                    if attWord == tokens[j:k+1]:
+                                        w = ster2[ind]
+                                        s, _ = self.score(last_hidden, index1s, index1f, j, k)
+                                        stData = self.formatData(last_hidden, hidden_in, word1, w, j, k, index1s, index1f)
+                                        stored["data"].append(stData)
+                                        word1_scores[key2][w] += s
+                                        word1_scores["appearances"][w] += 1
 
                     elif index2s != -1:
-                        attention = self.run_model(input_ids, token_type_ids)[0]
-                        ll = attention[-1]
-                        for head in ll:
-                            for ind in range(index2s, index2f+1):
-                                head[ind] = torch.nn.functional.softmax(head[ind])
-                            for j, w in enumerate(tokens):
-                                if w in word2_scores[key1]:
-                                    s = 0
-                                    for ind in range(index2s, index2f+1):
-                                        s += head[index2s][j].item()
-                                    s /= (index2f + 1 - index2s)
-                                    word2_scores[key1][w] += s
-                                    word2_scores["appearances"][w] += 1
-                                if w in word2_scores[key2]:
-                                    s = 0
-                                    for ind in range(index2s, index2f+1):
-                                        s += head[index2s][j].item()
-                                    s /= (index2f + 1 - index2s)
-                                    word2_scores[key2][w] += s
-                                    word2_scores["appearances"][w] += 1
+                        last_hidden, lh_input = self.run_model(input_ids, token_type_ids)
+                        hidden_in = lh_input[-2].squeeze(0)
+                        last_hidden = last_hidden.squeeze(0)
+                        for ind, attWord in enumerate(tokenizedSter1):
+                            for j in range(len(tokens)):
+                                for k in range(j, len(tokens)):
+                                    if attWord == tokens[j:k+1]:
+                                        w = ster1[ind]
+                                        s, _ = self.score(last_hidden, index2s, index2f, j, k)
+                                        stData = self.formatData(last_hidden, hidden_in, word2, w, j, k, index2s, index2f)
+                                        stored["data"].append(stData)
+                                        word2_scores[key1][w] += s
+                                        word2_scores["appearances"][w] += 1
 
-                if int(self.data_portion * self.corpLen) == i:
-                    break
+                        for ind, attWord in enumerate(tokenizedSter2):
+                            for j in range(len(tokens)):
+                                for k in range(j, len(tokens)):
+                                    if attWord == tokens[j:k+1]:
+                                        w = ster2[ind]
+                                        s, _ = self.score(last_hidden, index2s, index2f, j, k)
+                                        stData = self.formatData(last_hidden, hidden_in, word2, w, j, k, index2s, index2f)
+                                        stored["data"].append(stData)
+                                        word2_scores[key2][w] += s
+                                        word2_scores["appearances"][w] += 1
+
+            if int(self.data_portion * self.corpLen) <= i:
+            # if 1.2e6 <= i:
+                break
 
         word1_scores[key1] = self.sortDict(word1_scores[key1])
         word1_scores[key2] = self.sortDict(word1_scores[key2])
@@ -438,6 +470,27 @@ class BERT_Base:
         json.dump(data, f)
         f.close()
 
+        f = open(self.args.data_dir + "d-%s_s-%d-ste_%s-g1_%s-g2_%s.json" % (self.args.base_corpus, self.args.skip, sName, word1, word2), 'w')
+        json.dump(stored, f)
+        f.close()
+
+    def formatData(self, last_hidden, hidden_in, group, w, indexWS, indexWE, indexS, indexE):
+        data = {}
+        data["wzv"] = []
+        data["nzv"] = []
+        data["wxv"] = []
+        data["nxv"] = []
+        for i in range(indexS, indexE+1):
+            data["nzv"].append(last_hidden[i].tolist())
+            data["nxv"].append(hidden_in[i].tolist())
+        for i in range(indexWS, indexWE+1):
+            data["wzv"].append(last_hidden[i].tolist())
+            data["wxv"].append(hidden_in[i].tolist())
+
+        data["group"] = group
+        data["w"] = w
+        return data
+
     def processNames(self, fname, key1, key2):
         f = open(fname, 'r')
         data = json.load(f)
@@ -460,12 +513,28 @@ class BERT_Base:
         json.dump(data, f)
         f.close()
 
+    def score(self, last_hidden, indexS, indexE, indexWS, indexWE):
+        nameScores = []
 
+        m = -1
+        for i in range(indexS, indexE+1):
+            temp = []
+            for j in range(indexWS, indexWE+1):
+                s = torch.dot(last_hidden[j], last_hidden[i]).item()/(torch.norm(last_hidden[j]).item() * torch.norm(last_hidden[i]).item())
+                m = max(m, s)
+                temp.append(s)
+            nameScores.append(temp)
+
+        total = 0
+        for nt in nameScores:
+            total += sum(nt)
+
+        items = len(nameScores) * len(nameScores[0])
+        average = total / items
+
+        return average, m
 
     def sortDict(self, d):
-        # for key in d:
-        #     d[key] = d[key][0] / d[key][1]
-
         d = {k: v for k, v in sorted(d.items(), key=lambda item: item[1], reverse=True)}
         return d
 

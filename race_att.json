@@ -4,19 +4,14 @@
       "unpleasant": [
         "abuse",
         "crash",
-        "filth",
         "murder",
         "sickness",
-        "accident",
         "death",
-        "grief",
         "poison",
         "stink",
         "assault",
         "disaster",
         "hatred",
-        "pollute",
-        "tragedy",
         "bomb",
         "divorce",
         "jail",
@@ -25,11 +20,9 @@
         "cancer",
         "evil",
         "kill",
-        "rotten",
-        "vomit"
+        "rotten"
       ],
       "pleasant": [
-        "caress",
         "freedom",
         "health",
         "love",
@@ -39,21 +32,15 @@
         "heaven",
         "loyal",
         "pleasure",
-        "diamond",
         "gentle",
         "honest",
-        "lucky",
-        "rainbow",
-        "diploma",
         "gift",
         "honor",
         "miracle",
-        "sunrise",
         "family",
         "happy",
         "laughter",
-        "paradise",
-        "vacation"
+        "paradise"
       ]
     },
     "occupation": {
@@ -115,9 +102,9 @@
         "programmer",
         "hygienist",
         "scientist",
-        "CEO",
-        "CFO",
-        "CTO",
+        "ceo",
+        "cfo",
+        "cto",
         "president",
         "owner",
         "chairman",
@@ -127,6 +114,148 @@
         "director",
         "professor",
         "principal"
+      ]
+    },
+    "competency": {
+      "competent": [
+        "competent",
+        "productive",
+        "effective",
+        "ambitious",
+        "active",
+        "decisive",
+        "strong",
+        "tough",
+        "bold",
+        "assertive"
+      ],
+      "incompetent": [
+        "incompetent",
+        "unproductive",
+        "ineffective",
+        "unambitious",
+        "passive",
+        "indecisive",
+        "weak",
+        "gentle",
+        "timid",
+        "unassertive"
+      ]
+    },
+    "sci-spo": {
+      "science": [
+        "science",
+        "technology",
+        "physics",
+        "chemistry",
+        "Einstein",
+        "experiment",
+        "astronomy",
+        "computer",
+        "biology",
+        "meteorology",
+        "genetics",
+        "mathematics"
+      ],
+      "sports": [
+        "NCAA",
+        "sports",
+        "basketball",
+        "baseball",
+        "football",
+        "soccer",
+        "volleyball",
+        "track",
+        "softball",
+        "marathon",
+        "boxing",
+        "jump"
+      ]
+    },
+    "sci-art": {
+      "science": [
+        "science",
+        "technology",
+        "physics",
+        "chemistry",
+        "Einstein",
+        "NASA",
+        "experiment",
+        "astronomy"
+      ],
+      "art": [
+        "poetry",
+        "art",
+        "Shakespeare",
+        "dance",
+        "literature",
+        "novel",
+        "symphony",
+        "drama"
+      ]
+    },
+    "abw": {
+      "antonyms": [
+        "soft",
+        "quiet",
+        "compromising",
+        "rational",
+        "calm",
+        "kind",
+        "agreeable",
+        "servile",
+        "pleasant",
+        "cautious",
+        "friendly",
+        "supportive",
+        "nice",
+        "mild",
+        "demure",
+        "passive",
+        "indifferent",
+        "submissive"
+      ],
+      "angry": [
+        "shrill",
+        "loud",
+        "argumentative",
+        "irrational",
+        "angry",
+        "abusive",
+        "obnoxious",
+        "controlling",
+        "nagging",
+        "brash",
+        "hostile",
+        "emasculating",
+        "mean",
+        "harsh",
+        "sassy",
+        "aggressive",
+        "opinionated",
+        "domineering"
+      ]
+    },
+    "likeability" : {
+      "likeable": [
+        "agreeable",
+        "fair",
+        "honest",
+        "trustworthy",
+        "selfless",
+        "accommodating",
+        "likable",
+        "liked"
+      ],
+      "unlikeable": [
+        "agreeable",
+        "fair",
+        "honest",
+        "trustworthy",
+        "selfless",
+        "accommodating",
+        "likable",
+        "liked"
       ]
     }
   },
@@ -145,17 +274,7 @@
         "##rone"
       ],
       [
-        "per",
-        "##cel",
-        "##l"
-      ],
-      [
         "theo"
-      ],
-      [
-        "al",
-        "##phon",
-        "##se"
       ],
       [
         "jerome"
@@ -173,8 +292,9 @@
       ],
       [
         "dar",
-        "##nell",
-        ",",
+        "##nell"
+      ],
+      [
         "lamar"
       ],
       [
@@ -225,8 +345,9 @@
       ],
       [
         "ward",
-        "##ell",
-        ",",
+        "##ell"
+      ],
+      [
         "ai",
         "##esh",
         "##a"
@@ -289,9 +410,6 @@
         "adam"
       ],
       [
-        "chip"
-      ],
-      [
         "harry"
       ],
       [
@@ -322,9 +440,7 @@
         "fred"
       ],
       [
-        "jack",
-        ",",
-        "matthew"
+        "jack"
       ],
       [
         "stephen"
@@ -336,13 +452,7 @@
         "greg"
       ],
       [
-        "jed"
-      ],
-      [
         "paul"
-      ],
-      [
-        "todd"
       ],
       [
         "brandon"
@@ -357,18 +467,13 @@
         "peter"
       ],
       [
-        "wilbur"
-      ],
-      [
         "amanda"
       ],
       [
         "courtney"
       ],
       [
-        "heather",
-        ",",
-        "melanie"
+        "heather"
       ],
       [
         "sara"
@@ -381,12 +486,6 @@
       ],
       [
         "katie"
-      ],
-      [
-        "meredith"
-      ],
-      [
-        "shannon"
       ],
       [
         "betsy"
@@ -404,25 +503,13 @@
         "stephanie"
       ],
       [
-        "bobbie",
-        "-",
-        "sue"
-      ],
-      [
-        "ellen",
-        ",",
-        "lauren"
+        "ellen"
       ],
       [
         "peggy"
       ],
       [
-        "sue",
-        "-",
-        "ellen"
-      ],
-      [
-        "colleen"
+        "sue"
       ],
       [
         "emily"
@@ -435,6 +522,120 @@
       ],
       [
         "wendy"
+      ]
+    ],
+    "bw": [
+      [
+        "ai",
+        "##sha"
+      ],
+      [
+        "ebony"
+      ],
+      [
+        "kei",
+        "##sha"
+      ],
+      [
+        "la",
+        "##ton",
+        "##ya"
+      ],
+      [
+        "la",
+        "##kis",
+        "##ha"
+      ],
+      [
+        "la",
+        "##toy",
+        "##a"
+      ],
+      [
+        "tam",
+        "##ika"
+      ],
+      [
+        "im",
+        "##ani"
+      ],
+      [
+        "shan",
+        "##ice"
+      ],
+      [
+        "aa",
+        "##li",
+        "##yah"
+      ],
+      [
+        "precious"
+      ],
+      [
+        "ni",
+        "##a"
+      ],
+      [
+        "de",
+        "##ja"
+      ],
+      [
+        "la",
+        "##tan",
+        "##ya"
+      ],
+      [
+        "la",
+        "##tish",
+        "##a"
+      ]
+    ],
+    "ww": [
+      [
+        "allison"
+      ],
+      [
+        "anne"
+      ],
+      [
+        "carrie"
+      ],
+      [
+        "emily"
+      ],
+      [
+        "jill"
+      ],
+      [
+        "laurie"
+      ],
+      [
+        "kristen"
+      ],
+      [
+        "meredith"
+      ],
+      [
+        "molly"
+      ],
+      [
+        "amy"
+      ],
+      [
+        "claire"
+      ],
+      [
+        "katie"
+      ],
+      [
+        "madeline"
+      ],
+      [
+        "kate",
+        "##lyn"
+      ],
+      [
+        "emma"
       ]
     ]
   }

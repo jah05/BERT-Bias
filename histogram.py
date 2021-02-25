@@ -74,6 +74,147 @@ def plotStereotypeAveraged(group, args):
     fig.tight_layout()
     fig.savefig("graphs/%s/%s_score_average.png" %(args.folder, group))
 
+def plotWordProbabilities(args, group):
+    if group == args.g1:
+        _, _, data, _, app, _ = getData(args)
+    else:
+        _, _, _, data, _, app = getData(args)
+
+    key1, key2 = list(data.keys())[0], list(data.keys())[1]
+    data1 = data[key1]
+    data2 = data[key2]
+
+    sum = 0
+    for key in data1:
+        try:
+            data1[key] = data1[key] / app[key]
+        except ZeroDivisionError:
+            data1[key] = 0
+        sum += data1[key]
+    for key in data2:
+        try:
+            data2[key] = data2[key] / app[key]
+        except ZeroDivisionError:
+            data2[key] = 0
+        sum += data2[key]
+
+    for key in data1:
+        data1[key] /= sum
+    for key in data2:
+        data2[key] /= sum # probabilites ptgt/pprior
+
+    data1 = sortDict(data1)
+    data2 = sortDict(data2)
+
+
+    x = np.arange(len(data1) + len(data2))
+    width = 0.35
+
+    fig, ax = plt.subplots()
+    bars = ax.bar(x, list(data1.values()) + list(data2.values()), width)
+    ax.set_title(group + "Probabilities")
+    ax.set_ylabel("Probability")
+    ax.set_xticks(x)
+    ax.set_xticklabels(list(data1.keys()) + list(data2.keys()))
+    fig.legend(handles=[mpatches.Patch(color='red', label=key1), mpatches.Patch(color='blue', label=key2)])
+    for i in range(len(data1)):
+        ax.get_children()[i].set_color('r')
+    for i in range(len(data1), len(data1) + len(data2)):
+        ax.get_children()[i].set_color('b')
+    fig.tight_layout()
+    fig.savefig("graphs/%s/%s_probabilities.png" %(args.folder, group))
+
+def plotWordProbabilitiesSBS(args):
+    _, _, data1, data2, app1, app2 = getData(args)
+    key1, key2 = list(data1.keys())[0], list(data1.keys())[1]
+    x1 = np.arange(len(data1[key1]))
+    x2 = np.arange(len(data1[key2]))
+    width = 0.35
+    fig, ax = plt.subplots(1, 2, sharey=True)
+
+    l1 = []
+    l2 = []
+    l3 = []
+    l4 = []
+
+    sum1 = 0
+    sum2 = 0
+    for key in data1[key1]:
+        try:
+            data1[key1][key] = data1[key1][key] / app1[key]
+        except ZeroDivisionError:
+            data1[key1][key] = 0
+        try:
+            data2[key1][key] = data2[key1][key] / app2[key]
+        except ZeroDivisionError:
+            data2[key1][key] = 0
+        sum1 += data1[key1][key]
+        sum2 += data2[key1][key]
+
+    for key in data1[key2]:
+        try:
+            data1[key2][key] = data1[key2][key] / app1[key]
+        except ZeroDivisionError:
+            data1[key2][key] = 0
+        try:
+            data2[key2][key] = data2[key2][key] / app2[key]
+        except ZeroDivisionError:
+            data2[key2][key] = 0
+        sum1 += data1[key2][key]
+        sum2 += data2[key2][key]
+
+    for key in data1[key1]:
+        data1[key1][key] /= sum1
+        data2[key1][key] /= sum2
+    for key in data1[key2]:
+        data1[key2][key] /= sum1
+        data2[key2][key] /= sum2
+
+    data1[key1] = sortDict(data1[key1])
+    data1[key2] = sortDict(data1[key2])
+
+    for key in data1[key1]:
+        l1.append(data1[key1][key])
+        l2.append(data2[key1][key])
+
+    for key in data1[key2]:
+        l3.append(data1[key2][key])
+        l4.append(data2[key2][key])
+
+    rects1 = ax[0].bar(x1 - width/2, l1, width, label=args.g1)
+    rects2 = ax[0].bar(x1 + width/2, l2, width, label=args.g2)
+
+    rects3 = ax[1].bar(x2 - width/2, l3, width, label=args.g1)
+    rects4 = ax[1].bar(x2 + width/2, l4, width, label=args.g2)
+
+
+    label1 = []
+    for i, word in enumerate(data1[key1]):
+        if i % args.skip == 0:
+            label1.append(word)
+        else:
+            label1.append('')
+
+    label2 = []
+    for i, word in enumerate(data1[key2]):
+        if i % args.skip == 0:
+            label2.append(word)
+        else:
+            label2.append('')
+    ax[0].set_ylabel('Probability')
+    ax[0].set_title(key1)
+    ax[0].set_xticks(x1)
+    ax[0].set_xticklabels(label1)
+    ax[0].legend()
+    ax[1].set_title(key2)
+    ax[1].set_xticks(x2)
+    ax[1].set_xticklabels(label2)
+    ax[1].legend()
+
+    fig.tight_layout()
+    fig.savefig("graphs/%s/%s_vs_%s_prob_SBS.png" %(args.folder, args.g1, args.g2))
+
+
 def plotSideBySide(args):
     _, _, data1, data2, _, _ = getData(args)
     key1, key2 = list(data1.keys())[0], list(data1.keys())[1]
@@ -311,7 +452,25 @@ def getData(args):
     app2 = i[args.ste]["appearances"]
     f2.close()
 
-    return j, i, data1, data2, app1, app2
+    if args.restrict:
+        include = ["ineffective", "passive", "incompetent", "unproductive", "ineffective", "unambitious", "passive", "indecisive", "weak", "gentle", "timid","unassertive"]
+        d1 = {}
+        d2 = {}
+        for pkey in data1:
+            d1[pkey] = {}
+            for key in data1[pkey]:
+                if key in include:
+                    d1[pkey][key] = data1[pkey][key]
+        for pkey in data2:
+            d2[pkey] = {}
+            for key in data2[pkey]:
+                if key in include:
+                    d2[pkey][key] = data2[pkey][key]
+    else:
+        d1 = data1
+        d2 = data2
+
+    return j, i, d1, d2, app1, app2
 
 
 if __name__ == "__main__":
@@ -322,22 +481,26 @@ if __name__ == "__main__":
     parser.add_argument('--folder', default="basic", type=str)
     parser.add_argument('--g1', default="she", type=str)
     parser.add_argument('--g2', default="he", type=str)
+    parser.add_argument('--restrict', default=False, type=bool)
+    parser.add_argument('--skip', default=1, type=int)
     args = parser.parse_args()
     print(args)
 
     if not os.path.isdir("graphs/%s" %args.folder):
         os.mkdir("graphs/%s" %args.folder)
 
-    plot2Stereotypes(args.g1, args)
+    # plot2Stereotypes(args.g1, args)
     plotStereotypeAveraged(args.g1, args)
-
-    plot2Stereotypes(args.g2, args)
+    #
+    # plot2Stereotypes(args.g2, args)
     plotStereotypeAveraged(args.g2, args)
-
-    plotSideBySide(args)
-    plotNormSideBySide(args)
-    plotNormPerBar(args)
-    plotNormOcc(args)
+    #
+    # plotSideBySide(args)
+    # plotNormSideBySide(args)
+    # plotNormPerBar(args)
+    # plotNormOcc(args)
     plotAvgSBS(args)
-
+    # plotWordProbabilities(args, args.g1)
+    # plotWordProbabilities(args, args.g2)
+    plotWordProbabilitiesSBS(args)
     plt.show()

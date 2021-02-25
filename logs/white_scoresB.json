@@ -1,0 +1,259 @@
+{
+  "pu": {
+    "unpleasant": {
+      "poison": 1301.300153079107,
+      "divorce": 1222.2994065643586,
+      "sickness": 1216.4163419146419,
+      "jail": 1110.4977965036203,
+      "assault": 839.186510222389,
+      "abuse": 821.5627020275117,
+      "death": 788.9045150702644,
+      "murder": 755.9508255392465,
+      "bomb": 733.1141366358158,
+      "disaster": 693.6944109006106,
+      "cancer": 688.1670329196311,
+      "crash": 661.3766450460607,
+      "stink": 606.9012672514345,
+      "poverty": 439.0332312710663,
+      "hatred": 392.6028480152892,
+      "evil": 296.9176555642784
+    },
+    "pleasant": {
+      "friend": 801.6030282650946,
+      "gift": 762.3402742198773,
+      "family": 754.1290158850936,
+      "miracle": 739.2605435404244,
+      "honor": 717.6548094499377,
+      "freedom": 466.3828734844355,
+      "health": 459.8478064987449,
+      "pleasure": 446.85734560760585,
+      "cheer": 445.0197886139812,
+      "peace": 437.64548045835375,
+      "laughter": 394.11866641513967,
+      "love": 392.75556268118726,
+      "gentle": 364.79667067491454,
+      "loyal": 360.02451810199955,
+      "happy": 325.7859148521579,
+      "honest": 279.2401641684564
+    },
+    "appearances": {
+      "abuse": 1792,
+      "crash": 1792,
+      "murder": 1792,
+      "sickness": 3136,
+      "death": 1792,
+      "poison": 3136,
+      "stink": 1792,
+      "assault": 1792,
+      "disaster": 1792,
+      "hatred": 896,
+      "bomb": 1792,
+      "divorce": 3136,
+      "jail": 3136,
+      "poverty": 896,
+      "cancer": 1792,
+      "evil": 672,
+      "rotten": 672,
+      "freedom": 896,
+      "health": 896,
+      "love": 896,
+      "peace": 896,
+      "cheer": 896,
+      "friend": 1792,
+      "heaven": 896,
+      "loyal": 672,
+      "pleasure": 896,
+      "gentle": 672,
+      "honest": 672,
+      "gift": 1792,
+      "honor": 1792,
+      "miracle": 1792,
+      "family": 1792,
+      "happy": 672,
+      "laughter": 896,
+      "paradise": 3136
+    }
+  },
+  "occupation": {
+    "low-pay": {
+      "carpenter": 105.86463932335265,
+      "assistant": 104.45596219499619,
+      "clerk": 101.54298052058643,
+      "mechanic": 95.5631969842019,
+      "driver": 95.4474644213191,
+      "receptionist": 87.07744176704443,
+      "hairdresser": 67.31431325491495,
+      "cashier": 63.630840423511195
+    },
+    "high-pay": {
+      "manager": 110.15291772168915,
+      "lawyer": 103.62193356618738,
+      "ceo": 101.21916164261539,
+      "physician": 98.41360974776946,
+      "designer": 94.4426270507366,
+      "nurse": 91.79931224332616,
+      "salesperson": 85.45671230138565
+    },
+    "appearances": {
+      "clerk": 240,
+      "mechanic": 240,
+      "receptionist": 240,
+      "carpenter": 240,
+      "hairdresser": 240,
+      "assistant": 240,
+      "driver": 240,
+      "cashier": 240,
+      "manager": 240,
+      "salesperson": 240,
+      "physician": 240,
+      "nurse": 240,
+      "lawyer": 240,
+      "ceo": 240,
+      "designer": 240
+    }
+  },
+  "competency": {
+    "incompetent": {
+      "gentle": 364.79667067491454,
+      "ineffective": 344.50247364812174,
+      "weak": 341.5915075747831,
+      "timid": 283.85846650967625,
+      "passive": 281.35951828517494,
+      "unproductive": 233.6545851163113,
+      "unambitious": 219.77277708579217,
+      "unassertive": 204.07970761512362,
+      "incompetent": 182.7412985018069,
+      "indecisive": 177.43753512609172
+    },
+    "competent": {
+      "competent": 385.32365599687546,
+      "strong": 354.86086214803737,
+      "productive": 338.9057753758357,
+      "effective": 329.53076925786036,
+      "active": 327.47568559756894,
+      "decisive": 323.4047777772192,
+      "bold": 292.53481672146455,
+      "ambitious": 289.66121359958987,
+      "tough": 289.4550809010119,
+      "assertive": 243.9292212385953
+    },
+    "appearances": {
+      "incompetent": 672,
+      "unproductive": 672,
+      "ineffective": 672,
+      "unambitious": 672,
+      "passive": 672,
+      "indecisive": 672,
+      "weak": 672,
+      "gentle": 672,
+      "timid": 672,
+      "unassertive": 672,
+      "competent": 672,
+      "productive": 672,
+      "effective": 672,
+      "ambitious": 672,
+      "active": 672,
+      "decisive": 672,
+      "strong": 672,
+      "tough": 672,
+      "bold": 672,
+      "assertive": 672
+    }
+  },
+  "sci-art": {
+    "art": {
+      "symphony": 566.1238294815525,
+      "dance": 539.6772205657192,
+      "novel": 453.8232265669453,
+      "poetry": 431.11011960773953,
+      "drama": 389.20383869121144,
+      "art": 349.5718361205183,
+      "literature": 334.55930284809347,
+      "Shakespeare": 0
+    },
+    "science": {
+      "technology": 774.0213198958209,
+      "experiment": 645.8964795198686,
+      "chemistry": 422.5787602006609,
+      "physics": 406.9786508393591,
+      "science": 395.5492070431641,
+      "astronomy": 380.79103961306805,
+      "Einstein": 0,
+      "NASA": 0
+    },
+    "appearances": {
+      "poetry": 896,
+      "art": 672,
+      "Shakespeare": 0,
+      "dance": 1344,
+      "literature": 672,
+      "novel": 1120,
+      "symphony": 1568,
+      "drama": 896,
+      "science": 896,
+      "technology": 1792,
+      "physics": 896,
+      "chemistry": 896,
+      "Einstein": 0,
+      "NASA": 0,
+      "experiment": 1792,
+      "astronomy": 896
+    }
+  },
+  "likeability": {
+    "unlikeable": {
+      "liked": 315.1970096754207,
+      "fair": 281.6444166007433,
+      "trustworthy": 279.29189049880546,
+      "honest": 279.2401641684564,
+      "selfless": 263.0997250196816,
+      "likable": 220.34652988751577,
+      "agreeable": 217.00104970273483,
+      "accommodating": 176.89976894012952
+    },
+    "likeable": {
+      "liked": 315.1970096754207,
+      "fair": 281.6444166007433,
+      "trustworthy": 279.29189049880546,
+      "honest": 279.2401641684564,
+      "selfless": 263.0997250196816,
+      "likable": 220.34652988751577,
+      "agreeable": 217.00104970273483,
+      "accommodating": 176.89976894012952
+    },
+    "appearances": {
+      "agreeable": 1344,
+      "fair": 1344,
+      "honest": 1344,
+      "trustworthy": 1344,
+      "selfless": 1344,
+      "accommodating": 1344,
+      "likable": 1344,
+      "liked": 1344
+    }
+  },
+  "dummyGB": {
+    "good": {
+      "good":1,
+      "positive":1,
+      "happy":1,
+      "yes":1
+    },
+    "bad" : {
+      "bad":1,
+      "negative":1,
+      "unhappy":1,
+      "no":1
+    },
+    "appearances" : {
+      "good":1,
+      "positive":1,
+      "happy":1,
+      "yes":1,
+      "bad":1,
+      "negative":1,
+      "unhappy":1,
+      "no":1
+    }
+  }
+}

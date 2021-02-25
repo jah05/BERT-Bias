@@ -22,6 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--path', default="logs/loghe.txt", type=str)
     parser.add_argument('--skip', default=3, type=int)
     parser.add_argument('--score_fname', default='', type=str)
+    parser.add_argument('--data_dir', default='D:/bert-data/', type=str)
     args = parser.parse_args()
 
     print(args)
@@ -30,18 +31,26 @@ if __name__ == '__main__':
         # b.processNames("race_att.json", "black", "white")
         f = open("race_att.json", 'r')
         data = json.load(f)
-        stereotypes = data["stereotype"]["occupation"]
-        names1 = data["names"]["black"]
-        names2 = data["names"]["white"]
-        b.stereotypeHistogramMulti("race_att.json", stereotypes, "low-pay", "high-pay", "black", "white", names1, names2, "occupation")
+        stereotypes = data["stereotype"]["abw"]
+        names1 = data["names"]["bw"]
+        names2 = data["names"]["ww"]
+        b.stereotypeHistogramMulti("race_att.json", stereotypes, "angry", "antonyms", "bw", "ww", names1, names2, "abw")
 
         # f = open("gender_att.json", 'r')
         # data = json.load(f)
-        # stereotype = data["stereotype"]["occupation"]
-        # key1 = "she"
-        # key2 = "he"
+        # stereotype = data["stereotype"]["sci-art"]
+        # key1 = "science"
+        # key2 = "art"
         # word1 = "she"
         # word2 = "he"
-        # sName = "occupation"
+        # sName = "sci-art"
         # f.close()
         # b.stereotypeHistogram(stereotype, key1, key2, word1, word2, sName)
+
+        # b.processNames("gender_att.json", "male-p", "female-p")
+        # f = open("gender_att.json", 'r')
+        # data = json.load(f)
+        # stereotypes = data["stereotype"]["career-family"]
+        # names1 = data["names"]["female-p"]
+        # names2 = data["names"]["male-p"]
+        # b.stereotypeHistogramMulti("gender_att.json", stereotypes, "family", "career", "female", "male", names1, names2, "career-family")
