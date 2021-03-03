@@ -14,7 +14,7 @@ class BERT_Base:
         self.k = args.k
         self.data_portion = args.data_portion
 
-        self.model_version = "bert-base-"
+        self.model_version = self.args.model + '-'
         if self.cased:
             self.model_version += "cased"
         else:
@@ -32,7 +32,7 @@ class BERT_Base:
             self.corpLen = 105600162
         elif args.base_corpus == "bleached":
             self.corpus = open("bleached.txt", 'r')
-            self.corpLen = 100000
+            self.corpLen = 500000
 
     def run_model(self, input_ids, token_type_ids):
         output = self.model(input_ids, token_type_ids=token_type_ids, output_attentions=True, output_hidden_states=True)
@@ -520,7 +520,8 @@ class BERT_Base:
         for i in range(indexS, indexE+1):
             temp = []
             for j in range(indexWS, indexWE+1):
-                s = torch.dot(last_hidden[j], last_hidden[i]).item()/(torch.norm(last_hidden[j]).item() * torch.norm(last_hidden[i]).item())
+                # changed to abs value
+                s = abs(torch.dot(last_hidden[j], last_hidden[i]).item()/(torch.norm(last_hidden[j]).item() * torch.norm(last_hidden[i]).item()))
                 m = max(m, s)
                 temp.append(s)
             nameScores.append(temp)

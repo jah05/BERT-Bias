@@ -2,6 +2,7 @@ import histogram
 import argparse
 import os
 import matplotlib.pyplot as plt
+import csv
 
 def evaluate(args):
     _, _, data1, data2, app1, app2 = histogram.getData(args)
@@ -38,6 +39,16 @@ def evaluate(args):
     for key in data1[key2]:
         data1[key2][key] /= sum1
         data2[key2][key] /= sum2
+
+    with open("graphs/%s/ratios.csv" %args.folder, 'w') as f:
+        fieldnames = ["word", "category", "%s score" %args.g1, "%s score" %args.g2, "%s:%s" %(args.g1, args.g2), "%s:%s" %(args.g2, args.g1)]
+        f_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        f_writer.writerow(fieldnames)
+        for key in data1[key1]:
+            f_writer.writerow([key, key1, data1[key1][key], data2[key1][key], data1[key1][key]/data2[key1][key], data2[key1][key]/data1[key1][key]])
+
+        for key in data1[key2]:
+            f_writer.writerow([key, key2, data1[key2][key], data2[key2][key], data1[key2][key]/data2[key2][key], data2[key2][key]/data1[key2][key]])
 
     sumA = 0
     counterA = 0

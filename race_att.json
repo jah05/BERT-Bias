@@ -248,14 +248,14 @@
         "liked"
       ],
       "unlikeable": [
-        "agreeable",
-        "fair",
-        "honest",
-        "trustworthy",
-        "selfless",
-        "accommodating",
-        "likable",
-        "liked"
+        "abrasive",
+        "conniving",
+        "manipulative",
+        "dishonest",
+        "selfish",
+        "pushy",
+        "unlikable",
+        "unliked"
       ]
     }
   },

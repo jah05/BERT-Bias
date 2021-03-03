@@ -155,8 +155,7 @@
       "poetry": 363.1071004174509,
       "drama": 336.82215187698995,
       "literature": 279.3251190968765,
-      "art": 277.7056486397861,
-      "Shakespeare": 0
+      "art": 277.7056486397861
     },
     "science": {
       "technology": 713.9528578195485,
@@ -164,14 +163,11 @@
       "astronomy": 370.2760329660219,
       "chemistry": 366.9863463186061,
       "physics": 362.6206127248246,
-      "science": 349.4646113700182,
-      "Einstein": 0,
-      "NASA": 0
+      "science": 349.4646113700182
     },
     "appearances": {
       "poetry": 768,
       "art": 576,
-      "Shakespeare": 0,
       "dance": 1152,
       "literature": 576,
       "novel": 960,
@@ -181,66 +177,68 @@
       "technology": 1536,
       "physics": 768,
       "chemistry": 768,
-      "Einstein": 0,
-      "NASA": 0,
       "experiment": 1536,
       "astronomy": 768
     }
   },
   "likeability": {
     "unlikeable": {
-      "trustworthy": 226.90293718459952,
-      "fair": 221.92385321998572,
-      "selfless": 219.31165972010274,
-      "likable": 214.999801061518,
-      "liked": 204.63578586482006,
-      "honest": 202.9014135948629,
-      "agreeable": 199.93882117766753,
-      "accommodating": 168.4543891222201
+      "pushy": 223.16385340530442,
+      "dishonest": 214.18464023085227,
+      "manipulative": 203.5245572267605,
+      "unlikable": 201.4059084942915,
+      "abrasive": 184.7235134891049,
+      "conniving": 183.05365059403354
     },
     "likeable": {
-      "trustworthy": 226.90293718459952,
+      "trustworthy": 226.90532581865762,
       "fair": 221.92385321998572,
       "selfless": 219.31165972010274,
-      "likable": 214.999801061518,
-      "liked": 204.63578586482006,
+      "liked": 204.6546813593226,
       "honest": 202.9014135948629,
-      "agreeable": 199.93882117766753,
-      "accommodating": 168.4543891222201
+      "agreeable": 199.94500300510202
     },
     "appearances": {
-      "agreeable": 1152,
-      "fair": 1152,
-      "honest": 1152,
-      "trustworthy": 1152,
-      "selfless": 1152,
-      "accommodating": 1152,
-      "likable": 1152,
-      "liked": 1152
+      "abrasive": 576,
+      "conniving": 576,
+      "manipulative": 576,
+      "dishonest": 576,
+      "selfish": 576,
+      "pushy": 576,
+      "unlikable": 576,
+      "unliked": 576,
+      "agreeable": 576,
+      "fair": 576,
+      "honest": 576,
+      "trustworthy": 576,
+      "selfless": 576,
+      "accommodating": 576,
+      "likable": 576,
+      "liked": 576
     }
   },
   "dummyGB": {
     "good": {
-      "good":1,
-      "positive":1,
-      "happy":1,
-      "yes":1
+      "good": 1,
+      "positive": 1,
+      "happy": 1,
+      "yes": 1
     },
-    "bad" : {
-      "bad":1,
-      "negative":1,
-      "unhappy":1,
-      "no":1
+    "bad": {
+      "bad": 1,
+      "negative": 1,
+      "unhappy": 1,
+      "no": 1
     },
-    "appearances" : {
-      "good":1,
-      "positive":1,
-      "happy":1,
-      "yes":1,
-      "bad":1,
-      "negative":1,
-      "unhappy":1,
-      "no":1
+    "appearances": {
+      "good": 1,
+      "positive": 1,
+      "happy": 1,
+      "yes": 1,
+      "bad": 1,
+      "negative": 1,
+      "unhappy": 1,
+      "no": 1
     }
   }
 }

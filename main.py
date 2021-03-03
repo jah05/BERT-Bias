@@ -26,15 +26,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print(args)
-    if args.model == "bert-base":
+    if True:
         b = BERT_Base(args)
         # b.processNames("race_att.json", "black", "white")
         f = open("race_att.json", 'r')
         data = json.load(f)
-        stereotypes = data["stereotype"]["abw"]
-        names1 = data["names"]["bw"]
-        names2 = data["names"]["ww"]
-        b.stereotypeHistogramMulti("race_att.json", stereotypes, "angry", "antonyms", "bw", "ww", names1, names2, "abw")
+        stereotypes = data["stereotype"]["likeability"]
+        names1 = data["names"]["black"]
+        names2 = data["names"]["white"]
+        b.stereotypeHistogramMulti("race_att.json", stereotypes, "unlikeable", "likeable", "black", "white", names1, names2, "likeability")
 
         # f = open("gender_att.json", 'r')
         # data = json.load(f)

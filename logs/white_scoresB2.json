@@ -1,0 +1,47 @@
+{
+  "occupation": {
+    "low-pay": {
+      "carpenter": 105.86463932335265,
+      "clerk": 101.54298052058643,
+      "mechanic": 95.5631969842019,
+      "driver": 95.4474644213191,
+      "receptionist": 87.07744176704443,
+      "hairdresser": 67.31431325491495,
+      "cashier": 63.65816518330522
+    },
+    "high-pay": {
+      "manager": 110.15291772168915,
+      "lawyer": 103.62193356618738,
+      "ceo": 101.21916164261539,
+      "physician": 98.41360974776946,
+      "designer": 94.4426270507366,
+      "nurse": 91.79931224332616,
+      "salesperson": 85.45671230138565
+    },
+    "appearances": {
+      "accountant": 240,
+      "supervisor": 240,
+      "clerk": 240,
+      "counselor": 240,
+      "mechanic": 240,
+      "receptionist": 240,
+      "janitor": 240,
+      "carpenter": 240,
+      "teacher": 240,
+      "hairdresser": 240,
+      "baker": 240,
+      "assistant": 240,
+      "driver": 240,
+      "cleaner": 240,
+      "cashier": 240,
+      "manager": 240,
+      "salesperson": 240,
+      "librarian": 240,
+      "physician": 240,
+      "nurse": 240,
+      "lawyer": 240,
+      "ceo": 240,
+      "designer": 240
+    }
+  }
+}
