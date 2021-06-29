@@ -6,6 +6,7 @@ import torch
 import datetime
 import json
 import os
+import csv
 
 class BERT_Base:
     def __init__(self, args):
@@ -100,6 +101,8 @@ class BERT_Base:
         ster2 = stereotype[key2]
 
         word1_scores = {key1:{}, key2:{}, "appearances":{}}
+        aa_words = []
+        ea_words = []
         word2_scores = {key1:{}, key2:{}, "appearances":{}}
 
         for attribute in ster1:
@@ -263,6 +266,12 @@ class BERT_Base:
         ster1 = stereotype[key1]
         ster2 = stereotype[key2]
 
+        aa_words1 = []
+        ea_words1 = []
+
+        aa_words2 = []
+        ea_words2 = []
+
         tokenizedSter1 = []
         tokenizedSter2 = []
         for attribute in ster1:
@@ -356,12 +365,14 @@ class BERT_Base:
                                         stored["data"].append(stData)
                                         word1_scores[key1][w] += s
                                         word1_scores["appearances"][w] += 1
+                                        aa_words1.append(s)
 
                                         s, _ = self.score(last_hidden, index2s, index2f, j, k)
                                         stData = self.formatData(last_hidden, hidden_in, word2, w, j, k, index2s, index2f)
                                         stored["data"].append(stData)
                                         word2_scores[key1][w] += s
                                         word2_scores["appearances"][w] += 1
+                                        ea_words1.append(s)
 
                         for ind, attWord in enumerate(tokenizedSter2):
                             for j in range(len(tokens)):
@@ -373,12 +384,14 @@ class BERT_Base:
                                         stored["data"].append(stData)
                                         word1_scores[key2][w] += s
                                         word1_scores["appearances"][w] += 1
+                                        aa_words2.append(s)
 
                                         s, _ = self.score(last_hidden, index2s, index2f, j, k)
                                         stData = self.formatData(last_hidden, hidden_in, word2, w, j, k, index2s, index2f)
                                         stored["data"].append(stData)
                                         word2_scores[key2][w] += s
                                         word2_scores["appearances"][w] += 1
+                                        ea_words2.append(s)
 
                     elif index1s != -1:
                         last_hidden, lh_input = self.run_model(input_ids, token_type_ids)
@@ -394,6 +407,7 @@ class BERT_Base:
                                         stored["data"].append(stData)
                                         word1_scores[key1][w] += s
                                         word1_scores["appearances"][w] += 1
+                                        aa_words1.append(s)
 
                         for ind, attWord in enumerate(tokenizedSter2):
                             for j in range(len(tokens)):
@@ -405,6 +419,7 @@ class BERT_Base:
                                         stored["data"].append(stData)
                                         word1_scores[key2][w] += s
                                         word1_scores["appearances"][w] += 1
+                                        aa_words2.append(s)
 
                     elif index2s != -1:
                         last_hidden, lh_input = self.run_model(input_ids, token_type_ids)
@@ -420,6 +435,7 @@ class BERT_Base:
                                         stored["data"].append(stData)
                                         word2_scores[key1][w] += s
                                         word2_scores["appearances"][w] += 1
+                                        ea_words1.append(s)
 
                         for ind, attWord in enumerate(tokenizedSter2):
                             for j in range(len(tokens)):
@@ -431,6 +447,7 @@ class BERT_Base:
                                         stored["data"].append(stData)
                                         word2_scores[key2][w] += s
                                         word2_scores["appearances"][w] += 1
+                                        ea_words2.append(s)
 
             if int(self.data_portion * self.corpLen) <= i:
             # if 1.2e6 <= i:
@@ -473,6 +490,22 @@ class BERT_Base:
         f = open(self.args.data_dir + "d-%s_s-%d-ste_%s-g1_%s-g2_%s.json" % (self.args.base_corpus, self.args.skip, sName, word1, word2), 'w')
         json.dump(stored, f)
         f.close()
+
+        with open("logs/%s1.csv" % sName, 'w', newline='') as f:
+            fieldnames = ["aa", "ea"]
+            f_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            f_writer.writerow(fieldnames)
+            smallLen = min(len(ea_words1), len(aa_words1))
+            for g in range(smallLen):
+                f_writer.writerow([aa_words1[g], ea_words1[g]])
+
+        with open("logs/%s2.csv" % sName, 'w', newline='') as f:
+            fieldnames = ["aa", "ea"]
+            f_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            f_writer.writerow(fieldnames)
+            smallLen = min(len(aa_words2), len(ea_words2))
+            for g in range(smallLen):
+                f_writer.writerow([aa_words2[g], ea_words2[g]])
 
     def formatData(self, last_hidden, hidden_in, group, w, indexWS, indexWE, indexS, indexE):
         data = {}

@@ -31,10 +31,10 @@ if __name__ == '__main__':
         # b.processNames("race_att.json", "black", "white")
         f = open("race_att.json", 'r')
         data = json.load(f)
-        stereotypes = data["stereotype"]["likeability"]
+        stereotypes = data["stereotype"]["pu"]
         names1 = data["names"]["black"]
         names2 = data["names"]["white"]
-        b.stereotypeHistogramMulti("race_att.json", stereotypes, "unlikeable", "likeable", "black", "white", names1, names2, "likeability")
+        b.stereotypeHistogramMulti("race_att.json", stereotypes, "unpleasant", "pleasant", "black", "white", names1, names2, "pu")
 
         # f = open("gender_att.json", 'r')
         # data = json.load(f)
